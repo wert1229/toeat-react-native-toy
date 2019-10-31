@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
 
 const CategoryList = ({ categoryList, onCategoryClick }) => {
