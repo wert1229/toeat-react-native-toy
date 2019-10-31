@@ -4,8 +4,9 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 
-import Home from '@/screens/home';
-import Info from '@/screens/info';
+import Home from './home';
+import Intro from './intro'
+import Info from './info';
 
 //This is where navigations should be placed
 
@@ -63,7 +64,7 @@ const TabNavigator = createBottomTabNavigator(
 
 const AppStack = createStackNavigator(
     {
-        // LoginScreen: LoginScreen,
+        Intro: Intro,
         TabNavigator: {
             screen: TabNavigator,
             navigationOptions: ({navigation}) => ({

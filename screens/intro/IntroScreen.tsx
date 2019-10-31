@@ -1,14 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import CategoryList from '@/components/CategoryList';
-
-const HomeScreen = ({ categoryList, onCategoryClick }) => {
+const IntroScreen = ({ }) => {
     return (
         <View style={styles.container}>
-            <CategoryList 
-                categoryList={categoryList}
-                onCategoryClick={onCategoryClick}/>
+            <Text>Loading...</Text>
         </View>
     );
 } 
@@ -22,4 +18,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default HomeScreen;
+export default IntroScreen;

@@ -1,6 +1,4 @@
-import { combineReducers } from 'redux';
-import category from './home';
+import { createStore } from 'redux';
+import reducers from './modules';
 
-export default combineReducers({
-    category
-});
+export default createStore(reducers);
