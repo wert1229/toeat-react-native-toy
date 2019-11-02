@@ -1,26 +1,28 @@
 import React from 'react';
 import { StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
 
-const CategoryList = ({ categoryList, onCategoryClick }) => {
-    
-    const _renderItem = ({item, index}) => {
-
+const CategoryList = ({ categories, clickCategory }) => {
+    console.log(categories);
+    const _renderItem = ({ item: id, index }) => {
+        const byId = categories.get('byId');
+        const _item = byId.get(id);
+        
         return (
             <TouchableOpacity
                 style={styles.categoryBtn}
-                onPress={() => onCategoryClick(index)}>
+                onPress={() => clickCategory(_item.get('id'))}>
 
-                <Text>{item.name} ({item.itemList.length})</Text>
+                <Text>{_item.get('name')} ({'todo'})</Text>
             </TouchableOpacity>
         );
     }
     
-    const _extractKey = ({item, index}) => index
+    const _extractKey = (item, index) => (item)
 
     return (
         <FlatList
             style={styles.list}
-            data={categoryList.toJS()}
+            data={categories.get('allId').toJS()}
             renderItem={_renderItem}
             keyExtractor={_extractKey}
             numColumns={2} />

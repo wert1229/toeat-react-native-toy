@@ -1,13 +1,31 @@
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
-import * as infoActions from '@/stores/modules/info';
+import { CategoryActions } from '@/stores/actionCreators';
 import InfoScreen from './InfoScreen';
+
+interface Props {
+    
+}
 
 const mapStateToProps = (state) => ({
     categoryList: state.category.get('categoryList')
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(infoActions, dispatch);
+class InfoScreenContainer extends Component<Props> {
 
-export default connect(mapStateToProps, mapDispatchToProps)(InfoScreen);
+    _categoryClick = () => {
+        
+    }
+
+    render(){
+        const {  } = this.props;
+        const {  } = this;
+
+        return (
+            <InfoScreen />
+        );
+    }
+}
+
+export default connect(mapStateToProps)(InfoScreenContainer);
