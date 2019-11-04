@@ -6,11 +6,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const HomeScreen = ({ categories, clickCategory, addCategory, deleteCategory }) => {
     return (
-        <View style={styles.container}>
-            <CategoryList 
-                categories={categories}
-                clickCategory={clickCategory} />
-
+        <View style={styles.main}>
+            <View style={styles.listContainer}>
+                <CategoryList
+                    categories={categories}
+                    clickCategory={clickCategory} />
+            </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity 
                     style={styles.addButton}
@@ -24,11 +25,15 @@ const HomeScreen = ({ categories, clickCategory, addCategory, deleteCategory }) 
 } 
 
 const styles = StyleSheet.create({
-    container: {
+    main: {
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    listContainer: {
+        flex: 5,
+        backgroundColor: '#fff'
     },
     buttonContainer: {
         flex: 1,

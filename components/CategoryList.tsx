@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
 
 const CategoryList = ({ categories, clickCategory }) => {
-    console.log(categories);
+    
     const _renderItem = ({ item: id, index }) => {
         const byId = categories.get('byId');
         const _item = byId.get(id);
@@ -10,9 +10,9 @@ const CategoryList = ({ categories, clickCategory }) => {
         return (
             <TouchableOpacity
                 style={styles.categoryBtn}
-                onPress={() => clickCategory(_item.get('id'))}>
+                onPress={() => clickCategory(_item.get('id'), _item.get('name'))}>
 
-                <Text>{_item.get('name')} ({'todo'})</Text>
+                <Text>{_item.get('name')} ({_item.get('items').size})</Text>
             </TouchableOpacity>
         );
     }
@@ -33,10 +33,9 @@ const CategoryList = ({ categories, clickCategory }) => {
 const styles = StyleSheet.create({
     list: {
         width: "90%",
-
     },
     categoryBtn: {
-        flex: 1,
+        width: '45%',
         height: 120,
         margin: 10,
         justifyContent: 'center',

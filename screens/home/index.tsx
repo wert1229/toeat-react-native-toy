@@ -5,7 +5,8 @@ import { CategoryActions } from '@/stores/actionCreators';
 import HomeScreen from './HomeScreen';
 
 interface Props {
-    categories: []
+    categories: {},
+    navigation: any
 }
 
 const mapStateToProps = (state) => ({
@@ -22,8 +23,9 @@ class HomeScreenContainer extends Component<Props> {
         CategoryActions.deleteCategory(id);
     }
 
-    _clickCategory = (id) => {
+    _clickCategory = (id, name) => {
         CategoryActions.clickCategory(id);
+        this.props.navigation.navigate('Items', { title: name });
     }
 
     render(){
