@@ -23,27 +23,41 @@ const initialState = fromJS({
         byId: {
             '1': {
                 id: '1',
-                name: '신포만두'
+                name: '신포만두',
+                isDone: false
             },
             '2': {
                 id: '2',
-                name: '아오리라멘'
+                name: '아오리라멘',
+                isDone: false
             },
             '3': {
                 id: '3',
-                name: '쟈니덤플링'
+                name: '쟈니덤플링',
+                isDone: false
             }
         },
         allId: ['1', '2', '3']
     },
 
-    clickedCategory: ''
+    clickedCategory: '',
+
+    clickedItem: '',
+
+    ui: {
+        category: {
+            isAddMode: false,
+            isEditMode: false
+        }
+    }
 });
 
 const LOAD_CATEGORY = 'category/LOAD_CATEGORY';
 const ADD_CATEGORY = 'category/ADD_CATEGORY';
 const DELETE_CATEGORY = 'category/DELETE_CATEGORY';
 const CLICK_CATEGORY = 'category/CLICK_CATEGORY';
+
+const SET_CATE_ADDMODE = 'category/SET_CATE_ADDMODE';
 
 const ADD_ITEM = 'category/ADD_ITEM';
 const DELETE_ITEM = 'category/DELETE_ITEM';
@@ -53,6 +67,8 @@ export const loadCategory = createAction(LOAD_CATEGORY, initData => initData);
 export const addCategory = createAction(ADD_CATEGORY, name => name);
 export const deleteCategory = createAction(DELETE_CATEGORY, id => id);
 export const clickCategory = createAction(CLICK_CATEGORY, id => id);
+
+export const setCateAddmode = createAction(SET_CATE_ADDMODE, visible => visible);
 
 export const addItem = createAction(ADD_ITEM, name => name);
 export const deleteItem = createAction(DELETE_ITEM, id => id);
@@ -104,6 +120,12 @@ export default handleActions({
         return state.set('clickedCategory', id);
     },
 
+    [SET_CATE_ADDMODE]: (state, action) => {
+        const visible = action.payload;
+
+        return state.update('ui', (ui) => ui.update('category', (category) => category.set('isAddMode', visible)));
+    },
+
     [ADD_ITEM]: (state, action) => {
         const id = v4();
         const name = action.payload.name;
@@ -145,6 +167,6 @@ export default handleActions({
     [CLICK_ITEM]: (state, action) => {
         const id = action.payload;
 
-        return state.set('clickedCategory', id);
+        return state.set('clickedItem', id);
     },
 }, initialState);

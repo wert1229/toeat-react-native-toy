@@ -2,19 +2,30 @@ import React from 'react';
 import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 
-const ItemsScreen = ({ categories, items, categoryId, clickItems, addItem, deleteItem }) => {
+import * as HeaderButtons from '@/components/HeaderButtons';
+
+export const ItemsScreenHeader = ({ onClick }) => {
+    
+    return (
+        <HeaderButtons.AddButton title={'추가버튼'} onClick={onClick} />
+    );
+};
+
+const ItemsScreen = ({ categories, items, categoryId, clickItem, addItem, deleteItem }) => {
     
     const itemIds = categories.getIn(['byId', categoryId, 'items']);
     
     const _renderItem = ({ item: id, index }) => {
         const byId= items.get('byId');
         const _item = byId.get(id);
-        
+        const itemName = _item.get('name');
+
         return (
             <TouchableOpacity
-                style={styles.itemContainer}>
+                style={styles.itemContainer}
+                onPress={() => clickItem(id, itemName)}>
 
-                <Text style={styles.itemText}>{_item.get('name')}</Text>
+                <Text style={styles.itemText}>{itemName}</Text>
                 <Ionicons 
                     style={styles.itemImage}
                     name="md-arrow-dropright" 

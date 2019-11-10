@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 
 import Home from './home';
 import Items from './items'
+import Item from './item';
 import Intro from './intro'
 import Info from './info';
 
@@ -13,20 +14,24 @@ import Info from './info';
 
 const HomeStack = createStackNavigator(
     {
-        Home,
+        Home: {
+            screen: Home,
+
+            navigationOptions: ({ navigation }) => ({ })
+        },
         Items: {
             screen: Items,
 
-            navigationOptions: ({ navigation }) => ({
-                title: navigation.state.params.title
-            })
+            navigationOptions: ({ navigation }) => ({ })
+        },
+        Item: {
+            screen: Item,
+
+            navigationOptions: ({ navigation }) => ({ })
         }
     },
     {
-        initialRouteName: "Home",
-        defaultNavigationOptions: ({navigation}) => ({
-            title: 'Home',
-        })
+        initialRouteName: "Home"
     }
 );
 

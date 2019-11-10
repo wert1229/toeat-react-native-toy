@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 
 import { CategoryActions } from '@/stores/actionCreators';
-import ItemsScreen from './ItemsScreen';
+import ItemsScreen, { ItemsScreenHeader } from './ItemsScreen';
 
 interface Props {
     categories: {},
     items: {},
-    categoryId: string
+    categoryId: string,
+    navigation: any
 }
 
 const mapStateToProps = (state) => ({
@@ -18,16 +19,33 @@ const mapStateToProps = (state) => ({
 
 class ItemsScreenContainer extends Component<Props> {
 
+    //Navigation Part
+    static navigationOptions = ({ navigation }) => {
+
+        const _clickHeader = () => {           
+            navigation.navigate('Item', { title: '추가' });
+        }
+
+        return {
+            title: navigation.state.params.title,
+            headerRight: () => (
+                <ItemsScreenHeader onClick={_clickHeader} />
+            )
+        };
+    };
+
+     //Body Part
     _addItem = (name, categoryId) => {
         CategoryActions.addItem({ name, categoryId });
     }
 
     _deleteItem = (id) => {
-        CategoryActions.deleteCategory(id);
+        CategoryActions.deleteItem(id);
     }
 
-    _clickItem = (id) => {
-        CategoryActions.clickCategory(id);
+    _clickItem = (id, name) => {
+        CategoryActions.clickItem(id);
+        this.props.navigation.navigate('Item', { title: name });
     }
 
     render(){
@@ -41,7 +59,7 @@ class ItemsScreenContainer extends Component<Props> {
                 categoryId={categoryId}
                 addItem={_addItem}
                 deleteItem={_deleteItem}
-                clickItems={_clickItem}/>
+                clickItem={_clickItem}/>
         )
     }
 }

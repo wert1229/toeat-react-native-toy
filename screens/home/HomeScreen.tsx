@@ -1,10 +1,14 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Alert } from 'react-native';
 
 import CategoryList from '@/components/CategoryList';
+import DimModal from '@/components/DimModal';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const HomeScreen = ({ categories, clickCategory, addCategory, deleteCategory }) => {
+const HomeScreen = ({ categories, isAddMode, setAddMode, clickCategory, addCategory, deleteCategory }) => {
+    
+    const [ value, setValue ] = useState('');
+
     return (
         <View style={styles.main}>
             <View style={styles.listContainer}>
@@ -12,13 +16,35 @@ const HomeScreen = ({ categories, clickCategory, addCategory, deleteCategory }) 
                     categories={categories}
                     clickCategory={clickCategory} />
             </View>
+            
             <View style={styles.buttonContainer}>
                 <TouchableOpacity 
                     style={styles.addButton}
-                    onPress={() => addCategory('test')}>
+                    onPress={() => setAddMode(true)}>
 
                     <Text style={styles.addButtonText}>{'Add'}</Text>
                 </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalContainer}>
+                <DimModal
+                    visible={isAddMode}
+                    setVisibleFunc={setAddMode}>
+                        
+                    <View>
+                        <Text>{'추가'}</Text>
+                        <TextInput
+                            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                            onChangeText={(text) => { setValue(text) }} />
+                        <TouchableOpacity
+                            onPress={value === '' ? 
+                                () => {Alert.alert('alert', '빈칸불가')} :
+                                () => {setAddMode(false); return addCategory(value)} }>
+
+                            <Text>Ok</Text>
+                        </TouchableOpacity>
+                    </View>
+                </DimModal>
             </View>
         </View>
     );
@@ -41,6 +67,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'flex-end',
+    },
+    modalContainer: {
+        // justifyContent: 'center',
+        // alignItems: 'center'
     },
     addButton: {
         width: 350,
