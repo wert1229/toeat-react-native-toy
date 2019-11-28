@@ -1,5 +1,6 @@
 # ToEat
 
 TODOS: 
-  1. Redux --> Apollo
-  2. Add FireBase
+  * Redux --> Apollo
+  * Add FireBase
+  * Apply TypeScript
