@@ -22,7 +22,8 @@ class ItemsScreenContainer extends Component<Props> {
     //Navigation Part
     static navigationOptions = ({ navigation }) => {
 
-        const _clickHeader = () => {           
+        const _clickHeader = () => {
+            CategoryActions.setUiMode({ sector: 'item', mode: 'isAddMode', value: true })      
             navigation.navigate('Item', { title: '추가' });
         }
 
@@ -45,6 +46,7 @@ class ItemsScreenContainer extends Component<Props> {
 
     _clickItem = (id, name) => {
         CategoryActions.clickItem(id);
+        CategoryActions.setUiMode({ sector: 'item', mode: 'isAddMode', value: false });      
         this.props.navigation.navigate('Item', { title: name });
     }
 

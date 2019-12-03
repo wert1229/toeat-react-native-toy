@@ -1,7 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+import { Ionicons } from '@expo/vector-icons'; 
 
 import * as HeaderButtons from '@/components/HeaderButtons';
+import { fromJS } from 'immutable';
 
 export const ItemScreenHeader = ({ onClick }) => {
     
@@ -10,33 +16,149 @@ export const ItemScreenHeader = ({ onClick }) => {
     );
 };
 
-const ItemScreen = ({ item }) => {
+const ItemScreen = ({ item, isAddMode, isEditMode, setTempItem }) => {
+    
+    if(isAddMode) {
+        item = fromJS({ 
+            id: '',
+            isDone: false,
+            name: '',
+            location: {
+                latitude: 0,
+                longitude: 0
+            },
+            images: {},
+            address: '',
+            menu: '',
+            price: '',
+            score: '',
+            desc: ''
+        });
+    }
+
+    const region = {
+        latitude: item.get('location').get('latitude'),
+        longitude: item.get('location').get('longitude'),
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.005
+    }
     
     return (
         <View style={styles.main}>
-            <TouchableOpacity
-                style={styles.mapContainer}>
+            <View style={styles.mapContainer}>
 
-                <Text>{'Map area'}</Text>
-            </TouchableOpacity>
+                <GooglePlacesAutocomplete
+                    style={{ flex: 1 }}
+                    placeholder={'검색'}
+                    minLength={2}
+                    autoFocus={false}
+                    returnKeyType={'default'}
+                    fetchDetails={true}
+                    query={{
+                        key: {PROVIDER_GOOGLE},
+                        language: 'kor'}} />
 
-            <TouchableOpacity
-                style={styles.pictureContainer}>
+                {isAddMode ?
+                <MapView
+                    style={{ flex: 4 }}
+                    provider={PROVIDER_GOOGLE}
+                    showsUserLocation={true}>
 
-                <Text>{'Picture area'}</Text>
-            </TouchableOpacity>
+                </MapView> :
+
+                <MapView
+                    style={{ flex: 4 }}
+                    provider={PROVIDER_GOOGLE}
+                    initialRegion={region}>
+
+                    <Marker
+                        coordinate={region}
+                        title={item.get('name')}
+                        description={item.get('desc')} />
+                </MapView>       
+            }
+            </View>
+
+            <View style={styles.pictureContainer}>
+                <ScrollView
+                    horizontal={true}>
+
+                    <Image
+                        style={styles.pictureItem}
+                        source={require('@/assets/icon.png')}
+                        resizeMode={'stretch'} />
+                    <Image
+                        style={styles.pictureItem}
+                        source={require('@/assets/icon.png')}
+                        resizeMode={'stretch'} />
+                    <Image
+                        style={styles.pictureItem}
+                        source={require('@/assets/icon.png')}
+                        resizeMode={'stretch'} />
+                    <Image
+                        style={styles.pictureItem}
+                        source={require('@/assets/icon.png')}
+                        resizeMode={'stretch'} />
+                    <Ionicons
+                        style={styles.pictureItem}
+                        name="md-add-circle-outline" 
+                        size={32} />
+                </ScrollView>
+            </View>
 
             <View style={styles.editContainer}>
-                <Text>{'Date'}</Text>
-                <Text>{'Address'}</Text>
-                <Text>{'Menu'}</Text>
-                <Text>{'Price'}</Text>
-                <Text>{'Score'}</Text>
-                <Text>{'Description'}</Text>
+                <View style={styles.editItem}>
+                    <Text>{'상호명'}</Text>
+                    <TouchableOpacity>
+                        {isAddMode 
+                        ?<TextInput 
+                            placeholder={'상호명'}
+                            onChangeText={ text => setTempItem(text) }/>
+                        :<Text>{item.get('name')}</Text>}     
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.editItem}>
+                    <Text>{'주소'}</Text>
+                    <TouchableOpacity>
+                    {isAddMode 
+                        ?<Text>{'지도 길게 클릭'}</Text>
+                        :<Text>{item.get('address')}</Text>}
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.editItem}>
+                    <Text>{'메뉴'}</Text>
+                    <TouchableOpacity>
+                        {isAddMode 
+                        ?<TextInput placeholder={'메뉴'}/>
+                        :<Text>{item.get('menu')}</Text>}
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.editItem}>
+                    <Text>{'가격(인당)'}</Text>
+                    <TouchableOpacity>
+                        {isAddMode 
+                        ?<TextInput placeholder={'인당 가격'}/>
+                        :<Text>{item.get('price')}</Text>}
+                    </TouchableOpacity>
+                </View>
+                {!isAddMode &&
+                <View style={styles.editItem}>
+                    <Text>{'평점'}</Text>
+                    <TouchableOpacity>
+                        <Text>{item.get('score')}</Text>
+                    </TouchableOpacity>
+                </View>}
+                {!isAddMode &&
+                <View style={styles.editItem}>
+                    <Text>{'비고'}</Text>
+                    <TouchableOpacity>
+                        <Text>{item.get('desc')}</Text>
+                    </TouchableOpacity>
+                </View>}
             </View>
         </View>
     );
-} 
+}
 
 const styles = StyleSheet.create({
     main: {
@@ -49,11 +171,19 @@ const styles = StyleSheet.create({
     },
     pictureContainer: {
         flex: 1,
-        flexDirection: 'row',
         backgroundColor: '#bbb'
+    },
+    pictureItem: {
+        flex: 1,
+        width: 90
     },
     editContainer: {
         flex: 4
+    },
+    editItem: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: "space-between"
     },
     buttonText: {
         fontSize: 20,

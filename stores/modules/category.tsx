@@ -23,18 +23,52 @@ const initialState = fromJS({
         byId: {
             '1': {
                 id: '1',
+                isDone: false,
                 name: '신포만두',
-                isDone: false
+                location: {
+                    latitude: 37.604697,
+                    longitude: 127.064956
+                },
+                images: {
+
+                },
+                address: '서울시 서대문구',
+                menu: '만두',
+                price: '8000',
+                score: '3',
+                desc: 'TEST__'
             },
             '2': {
                 id: '2',
+                isDone: false,
                 name: '아오리라멘',
-                isDone: false
+                location: {
+
+                },
+                images: {
+
+                },
+                address: '',
+                menu: '',
+                price: '',
+                score: '',
+                desc: ''
             },
             '3': {
                 id: '3',
+                isDone: false,
                 name: '쟈니덤플링',
-                isDone: false
+                location: {
+
+                },
+                images: {
+
+                },
+                address: '',
+                menu: '',
+                price: '',
+                score: '',
+                desc: ''
             }
         },
         allId: ['1', '2', '3']
@@ -44,10 +78,21 @@ const initialState = fromJS({
 
     clickedItem: '',
 
+    tempItem: {
+
+    },
+    
     ui: {
         category: {
             isAddMode: false,
             isEditMode: false
+        },
+        items: {
+
+        },
+        item: {
+            isAddMode: false,
+            isEditMode: false 
         }
     }
 });
@@ -63,6 +108,8 @@ const ADD_ITEM = 'category/ADD_ITEM';
 const DELETE_ITEM = 'category/DELETE_ITEM';
 const CLICK_ITEM = 'category/CLICK_ITEM';
 
+const SET_UI_MODE = 'category/SET_UI_MODE'
+
 export const loadCategory = createAction(LOAD_CATEGORY, initData => initData);
 export const addCategory = createAction(ADD_CATEGORY, name => name);
 export const deleteCategory = createAction(DELETE_CATEGORY, id => id);
@@ -73,6 +120,8 @@ export const setCateAddmode = createAction(SET_CATE_ADDMODE, visible => visible)
 export const addItem = createAction(ADD_ITEM, name => name);
 export const deleteItem = createAction(DELETE_ITEM, id => id);
 export const clickItem = createAction(CLICK_ITEM, id => id);
+
+export const setUiMode = createAction(SET_UI_MODE);
 
 export default handleActions({
     [LOAD_CATEGORY]: (state, action) => {
@@ -169,4 +218,13 @@ export default handleActions({
 
         return state.set('clickedItem', id);
     },
+
+    [SET_UI_MODE]: (state, action) => {
+        const sector = action.payload.sector;
+        const mode = action.payload.mode;
+        const value = action.payload.value;
+        
+        return state.setIn(['ui', sector, mode], value);
+    },
+
 }, initialState);

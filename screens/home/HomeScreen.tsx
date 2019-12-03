@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Alert } from 'react-native';
 
+import * as DB from '@/utils/database';
 import CategoryList from '@/components/CategoryList';
 import DimModal from '@/components/DimModal';
 import { TouchableOpacity } from 'react-native-gesture-handler';
