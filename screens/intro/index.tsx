@@ -19,10 +19,9 @@ class IntroScreenContainer extends Component<Props> {
     }
 
     componentDidMount() {
-        
         setTimeout(() => {
             this._loadComplete();
-        },2000);
+        },500);
     }
 
     render(){

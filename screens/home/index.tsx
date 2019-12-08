@@ -30,19 +30,23 @@ class HomeScreenContainer extends Component<Props> {
     }
 
     _addCategory = (name) => {
-        CategoryActions.addCategory(name);
+        CategoryActions.firebase_addCategory(name);
     }
 
     _deleteCategory = (id) => {
         CategoryActions.deleteCategory(id);
     }
 
-    _clickCategory = (id, name) => {
-        CategoryActions.clickCategory(id);
-        this.props.navigation.navigate('Items', { title: name });
+    _clickCategory = (category) => {
+        CategoryActions.clickCategory(category);
+        this.props.navigation.navigate('Items', { title: category.get('name')});
     }
 
-    render(){
+    componentDidMount() {
+        CategoryActions.firebase_loadCategories();
+    }
+
+    render() {
         const { categories, isAddMode } = this.props;
         const { _setAddMode, _addCategory, _deleteCategory, _clickCategory } = this;
 

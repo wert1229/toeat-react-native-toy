@@ -1,31 +1,18 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 
-import * as HeaderButtons from '@/components/HeaderButtons';
-
-export const ItemsScreenHeader = ({ onClick }) => {
-    
-    return (
-        <HeaderButtons.AddButton title={'추가버튼'} onClick={onClick} />
-    );
-};
-
-const ItemsScreen = ({ categories, items, categoryId, clickItem, addItem, deleteItem }) => {
-    
-    const itemIds = categories.getIn(['byId', categoryId, 'items']);
+const ItemsScreen = ({ items, clickedCategory, clickItem, clickAddBtn, deleteItem }) => {
     
     const _renderItem = ({ item: id, index }) => {
-        const byId= items.get('byId');
-        const _item = byId.get(id);
-        const itemName = _item.get('name');
-
+        const curItem = items.get(id);
+        
         return (
             <TouchableOpacity
                 style={styles.itemContainer}
-                onPress={() => clickItem(id, itemName)}>
+                onPress={() => clickItem(curItem)}>
 
-                <Text style={styles.itemText}>{itemName}</Text>
+                <Text style={styles.itemText}>{curItem.get('name')}</Text>
                 <Ionicons 
                     style={styles.itemImage}
                     name="md-arrow-dropright" 
@@ -40,14 +27,14 @@ const ItemsScreen = ({ categories, items, categoryId, clickItem, addItem, delete
         <View style={styles.main}>
             <View style={styles.listContainer}>
                 <FlatList 
-                    data={itemIds.toJS()}
+                    data={Object.keys(items.toJS())}
                     renderItem={_renderItem}
                     keyExtractor={_extractKey} />
             </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity 
                     style={styles.addButton}
-                    onPress={() => addItem('test', categoryId)}>
+                    onPress={() => clickAddBtn()}>
 
                     <Text style={styles.addButtonText}>{'Add'}</Text>
                 </TouchableOpacity>

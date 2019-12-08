@@ -15,10 +15,4 @@ firebase.initializeApp(firebaseConfig);
 // Get a reference to the database service
 var database = firebase.database();
 
-export function storeHighScore(userId, score) {
-    firebase.database().ref('users/' + userId).set({
-        highscore: score
-    });
-}
-
 export default database;

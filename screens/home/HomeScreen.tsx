@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Alert, TouchableOpacity } from 'react-native';
 
-import * as DB from '@/utils/database';
 import CategoryList from '@/components/CategoryList';
 import DimModal from '@/components/DimModal';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const HomeScreen = ({ categories, isAddMode, setAddMode, clickCategory, addCategory, deleteCategory }) => {
     
@@ -60,6 +58,7 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flex: 5,
+        width: '100%',
         backgroundColor: '#fff'
     },
     buttonContainer: {

@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 
 import { CategoryActions } from '@/stores/actionCreators';
-import ItemScreen, { ItemScreenHeader} from './ItemScreen';
+import ItemScreen from './ItemScreen';
 
 interface Props {
-    item: {},
+    clickedItem: {},
     categoryId: string,
     isAddMode: boolean,
     isEditMode: boolean,
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const mapStateToProps = (state) => ({
-    item: state.category.get('items').get('byId').get(state.category.get('clickedItem')),
+    clickedItem: state.category.get('clickedItem'),
     categoryId: state.category.get('clickedCategory'),
     isAddMode: state.category.get('ui').get('item').get('isAddMode'),
     isEditMode: state.category.get('ui').get('item').get('isEditMode')
@@ -22,28 +22,9 @@ const mapStateToProps = (state) => ({
 class ItemScreenContainer extends Component<Props> {
     
     //Navigation Part 
-    componentDidMount() {
-        const { categoryId, isAddMode, isEditMode } = this.props;
-        this.props.navigation.setParams({ categoryId: categoryId});
-    }
-
     static navigationOptions = ({ navigation }) => {
-        
-        const _clickHeader = () => {
-            const categoryId = navigation.getParam('categoryId');
-            const name = navigation.getParam('name');
-
-            if(categoryId == '' || typeof categoryId != 'string') return;
-
-            CategoryActions.addItem({ name: name, categoryId: categoryId });
-            navigation.goBack();
-        }
-
         return {
             title: navigation.state.params.title,
-            headerRight: () => (
-                <ItemScreenHeader onClick={_clickHeader} />
-            )
         };
     };
 
@@ -51,7 +32,11 @@ class ItemScreenContainer extends Component<Props> {
     _setTempItem = (name) => {
         this.props.navigation.setParams({ name: name });
     }
-    
+
+    _addItem = (item) => {
+        CategoryActions.firebase_addItem(item);
+    }
+
     _saveItem = (name, categoryId) => {
         CategoryActions.addItem({ name, categoryId });
     }
@@ -69,15 +54,16 @@ class ItemScreenContainer extends Component<Props> {
     }
     
     render(){
-        const { item, isAddMode, isEditMode } = this.props;
-        const { _setTempItem, _saveItem, _toggleEdit, _searchMap, _clickPhoto } = this;
+        const { clickedItem, isAddMode, isEditMode } = this.props;
+        const { _setTempItem, _addItem, _saveItem, _toggleEdit, _searchMap, _clickPhoto } = this;
 
         return (
             <ItemScreen 
-                item={item}
+                item={clickedItem}
                 isAddMode={isAddMode}
                 isEditMode={isEditMode}
-                setTempItem={_setTempItem}/>
+                setTempItem={_setTempItem}
+                addItem={_addItem}/>
         )
     }
 }

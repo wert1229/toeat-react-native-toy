@@ -6,36 +6,8 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 
 import { Ionicons } from '@expo/vector-icons'; 
 
-import * as HeaderButtons from '@/components/HeaderButtons';
-import { fromJS } from 'immutable';
-
-export const ItemScreenHeader = ({ onClick }) => {
+const ItemScreen = ({ item, isAddMode, isEditMode, setTempItem, addItem }) => {
     
-    return (
-        <HeaderButtons.ConfirmButton title={'생성버튼'} onClick={onClick} />
-    );
-};
-
-const ItemScreen = ({ item, isAddMode, isEditMode, setTempItem }) => {
-    
-    if(isAddMode) {
-        item = fromJS({ 
-            id: '',
-            isDone: false,
-            name: '',
-            location: {
-                latitude: 0,
-                longitude: 0
-            },
-            images: {},
-            address: '',
-            menu: '',
-            price: '',
-            score: '',
-            desc: ''
-        });
-    }
-
     const region = {
         latitude: item.get('location').get('latitude'),
         longitude: item.get('location').get('longitude'),
@@ -156,6 +128,14 @@ const ItemScreen = ({ item, isAddMode, isEditMode, setTempItem }) => {
                     </TouchableOpacity>
                 </View>}
             </View>
+            <View>
+                <TouchableOpacity 
+                    style={styles.addButton}
+                    onPress={() => addItem(item.toJS())}>
+
+                    <Text style={styles.addButtonText}>{'Add'}</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -186,6 +166,22 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     buttonText: {
+        fontSize: 20,
+        fontWeight: '300',
+        color: 'black'
+    },
+    addButton: {
+        width: 350,
+        height: 50,
+        marginBottom: 15,
+        backgroundColor: '#fff',
+        borderRadius: 25,
+        borderColor: 'black',
+        borderWidth: 1, 
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    addButtonText: {
         fontSize: 20,
         fontWeight: '300',
         color: 'black'

@@ -1,28 +1,29 @@
 import React from 'react';
-import { StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
+import { Dimensions, StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
+const SCREEN_WIDTH = width * 0.45
 
 const CategoryList = ({ categories, clickCategory }) => {
     
     const _renderItem = ({ item: id, index }) => {
-        const byId = categories.get('byId');
-        const _item = byId.get(id);
+        const curItem = categories.get(id);
         
         return (
             <TouchableOpacity
                 style={styles.categoryBtn}
-                onPress={() => clickCategory(_item.get('id'), _item.get('name'))}>
+                onPress={() => clickCategory(curItem)}>
 
-                <Text>{_item.get('name')} ({_item.get('items').size})</Text>
+                <Text>{curItem.get('name')}</Text>
             </TouchableOpacity>
         );
     }
     
     const _extractKey = (item, index) => (item)
-
+    
     return (
         <FlatList
-            style={styles.list}
-            data={categories.get('allId').toJS()}
+            data={Object.keys(categories.toJS())}
             renderItem={_renderItem}
             keyExtractor={_extractKey}
             numColumns={2} />
@@ -31,11 +32,8 @@ const CategoryList = ({ categories, clickCategory }) => {
 }
 
 const styles = StyleSheet.create({
-    list: {
-        width: "90%",
-    },
     categoryBtn: {
-        width: '45%',
+        width: SCREEN_WIDTH,
         height: 120,
         margin: 10,
         justifyContent: 'center',
