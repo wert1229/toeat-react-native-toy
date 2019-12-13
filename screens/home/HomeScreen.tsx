@@ -25,12 +25,12 @@ const HomeScreen = ({ categories, isAddMode, setAddMode, clickCategory, addCateg
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.modalContainer}>
+            <View>
                 <DimModal
                     visible={isAddMode}
                     setVisibleFunc={setAddMode}>
                         
-                    <View>
+                    <View style={styles.addPopup}>
                         <Text>{'추가'}</Text>
                         <TextInput
                             style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
@@ -68,9 +68,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-end',
     },
-    modalContainer: {
-        // justifyContent: 'center',
-        // alignItems: 'center'
+    addPopup: {
+        minWidth: '60%',
+        width: '100%',
+        height: '30%'
     },
     addButton: {
         width: 350,

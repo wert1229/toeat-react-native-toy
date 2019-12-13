@@ -35,6 +35,7 @@ class ItemScreenContainer extends Component<Props> {
 
     _addItem = (item) => {
         CategoryActions.firebase_addItem(item);
+        this.props.navigation.goBack();
     }
 
     _saveItem = (name, categoryId) => {
@@ -45,24 +46,19 @@ class ItemScreenContainer extends Component<Props> {
         CategoryActions.deleteCategory(id);
     }
 
-    _searchMap = (id) => {
-        CategoryActions.clickCategory(id);
-    }
-
     _clickPhoto = (id) => {
         CategoryActions.clickCategory(id);
     }
     
     render(){
         const { clickedItem, isAddMode, isEditMode } = this.props;
-        const { _setTempItem, _addItem, _saveItem, _toggleEdit, _searchMap, _clickPhoto } = this;
+        const { _setTempItem, _addItem, _saveItem, _toggleEdit, _clickPhoto } = this;
 
         return (
             <ItemScreen 
                 item={clickedItem}
                 isAddMode={isAddMode}
                 isEditMode={isEditMode}
-                setTempItem={_setTempItem}
                 addItem={_addItem}/>
         )
     }

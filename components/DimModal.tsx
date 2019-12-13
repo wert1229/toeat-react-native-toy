@@ -14,7 +14,7 @@ const DimModal = ({ children, visible, setVisibleFunc }) => {
                 activeOpacity={1}
                 onPress={() => setVisibleFunc(false)}>
 
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={styles.modalInner}
                     activeOpacity={1}
                     onPress={() => {}}>
@@ -29,14 +29,16 @@ const DimModal = ({ children, visible, setVisibleFunc }) => {
 
 const styles = StyleSheet.create({
     modalBackground: {
+        flexDirection: 'row',
+        width: '100%',
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0,0,0,0.5)'
     },
     modalInner: {
-        width: '60%',
-        height: '30%',
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: '#ffffff'
     }
 });

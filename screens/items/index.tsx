@@ -43,10 +43,10 @@ class ItemsScreenContainer extends Component<Props> {
     _clickAddBtn = () => {
         const item = fromJS({ 
             isDone: false,
-            name: 'TEST!@',
+            name: '',
             location: {
-                latitude: 0,
-                longitude: 0
+                latitude: 37.589996,
+                longitude: 127.057987
             },
             images: {},
             address: '',
