@@ -5,23 +5,16 @@ const DimModal = ({ children, visible, setVisibleFunc }) => {
 
     return (
         <Modal
-        animationType="fade"
-        transparent={true}
-        visible={visible}>
+            animationType="fade"
+            transparent={true}
+            visible={visible}>
         
             <TouchableOpacity
                 style={styles.modalBackground}
                 activeOpacity={1}
                 onPress={() => setVisibleFunc(false)}>
-
-                <TouchableOpacity
-                    style={styles.modalInner}
-                    activeOpacity={1}
-                    onPress={() => {}}>
-                    
-                    {children}
-                    
-                </TouchableOpacity>
+        
+                {children}
             </TouchableOpacity>
         </Modal>
     ); 

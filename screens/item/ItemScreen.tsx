@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import DimModal from '@/components/DimModal';
 
-const ItemScreen = ({ item, isAddMode, isEditMode, addItem }) => {
+const ItemScreen = ({ item, isAddMode, isEditMode, addItem, editItem }) => {
     
     const [curItem, setCurItem] = useState(item.toJS());
     const [modalVisible, setModalVisible] = useState(false);
@@ -15,14 +15,40 @@ const ItemScreen = ({ item, isAddMode, isEditMode, addItem }) => {
         setCurItem({
             ...curItem,
             ...value
-        })
+        });
+    }
+
+    const _makeStars = () => {
+        const score = curItem.score;
+        var starKind = '';
+        var stars = [];
+
+        for(let i = 2; i <= 10; i = i + 2) {
+            if (i <= score) {               
+                starKind = 'md-star';
+            } else {
+                starKind = (i - 1 == score) ? 'md-star-half': 'md-star-outline';
+            }
+
+            stars.push(
+                <TouchableOpacity
+                    key={i}
+                    onPress={() => _setItem({score: score == i ? i - 1 : i})}>
+
+                    <Ionicons 
+                        name={starKind}
+                        size={24} />
+                </TouchableOpacity>)
+        }
+        
+        return stars;
     }
           
     const region = {
         latitude: curItem.location.latitude,
         longitude: curItem.location.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.005
+        latitudeDelta: 0.002,
+        longitudeDelta: 0.002
     }
 
     return (
@@ -120,9 +146,9 @@ const ItemScreen = ({ item, isAddMode, isEditMode, addItem }) => {
                 {!isAddMode &&
                 <View style={styles.editItem}>
                     <Text>{'평점'}</Text>
-                    <TouchableOpacity>
-                        <Text>{curItem.score}</Text>
-                    </TouchableOpacity>
+                    <View style={{flexDirection: 'row'}}>
+                        {_makeStars()} 
+                    </View>
                 </View>}
                 {!isAddMode &&
                 <View style={styles.editItem}>
@@ -132,6 +158,7 @@ const ItemScreen = ({ item, isAddMode, isEditMode, addItem }) => {
                     </TouchableOpacity>
                 </View>}
             </View>
+            {isAddMode &&
             <View style={styles.addContainer}>
                 <TouchableOpacity 
                     style={styles.addButton}
@@ -139,7 +166,16 @@ const ItemScreen = ({ item, isAddMode, isEditMode, addItem }) => {
 
                     <Text style={styles.addButtonText}>{'Add'}</Text>
                 </TouchableOpacity>
-            </View>
+            </View>}
+            {isEditMode &&
+            <View style={styles.addContainer}>
+                <TouchableOpacity 
+                    style={styles.addButton}
+                    onPress={() => editItem(curItem)}>
+
+                    <Text style={styles.addButtonText}>{'Edit'}</Text>
+                </TouchableOpacity>
+            </View>}
 
             <View>
                 <DimModal
@@ -224,8 +260,10 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     searchPopup: {
-        minWidth: '100%',
-        height: '70%'
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
+        minWidth: '100%', 
+        height: '70%'  
     }
 });
 

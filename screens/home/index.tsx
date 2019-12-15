@@ -25,16 +25,17 @@ class HomeScreenContainer extends Component<Props> {
     };
 
     //Body Part
-    _setAddMode = (visible) => {
-        CategoryActions.setCateAddmode(visible);
-    }
 
     _addCategory = (name) => {
         CategoryActions.firebase_addCategory(name);
     }
 
+    _editCategory = (category) => {
+        CategoryActions.firebase_editCategory(category.toJS());
+    }
+
     _deleteCategory = (id) => {
-        CategoryActions.deleteCategory(id);
+        CategoryActions.firebase_deleteCategory(id);
     }
 
     _clickCategory = (category) => {
@@ -43,19 +44,21 @@ class HomeScreenContainer extends Component<Props> {
     }
 
     componentDidMount() {
-        CategoryActions.firebase_loadCategories();
+        this.props.navigation.addListener('willFocus', () => {
+            CategoryActions.clickItem({});
+            CategoryActions.firebase_loadCategories();
+        });
     }
 
     render() {
-        const { categories, isAddMode } = this.props;
-        const { _setAddMode, _addCategory, _deleteCategory, _clickCategory } = this;
+        const { categories } = this.props;
+        const { _addCategory, _editCategory, _deleteCategory, _clickCategory } = this;
 
         return (
             <HomeScreen 
                 categories={categories}
-                isAddMode={isAddMode}
-                setAddMode={_setAddMode}
                 addCategory={_addCategory}
+                editCategory={_editCategory}
                 deleteCategory={_deleteCategory}
                 clickCategory={_clickCategory} />
         )

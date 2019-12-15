@@ -7,61 +7,7 @@ import firebase from '@/utils/firebase';
 const initialState = fromJS({
     categories: {},
 
-    items: {
-        byId: {
-            '1': {
-                id: '1',
-                isDone: false,
-                name: '신포만두',
-                location: {
-                    latitude: 37.604697,
-                    longitude: 127.064956
-                },
-                images: {
-
-                },
-                address: '서울시 서대문구',
-                menu: '만두',
-                price: '8000',
-                score: '3',
-                desc: 'TEST__',
-                categoryId: ''
-            },
-            '2': {
-                id: '2',
-                isDone: false,
-                name: '아오리라멘',
-                location: {
-
-                },
-                images: {
-
-                },
-                address: '',
-                menu: '',
-                price: '',
-                score: '',
-                desc: ''
-            },
-            '3': {
-                id: '3',
-                isDone: false,
-                name: '쟈니덤플링',
-                location: {
-
-                },
-                images: {
-
-                },
-                address: '',
-                menu: '',
-                price: '',
-                score: '',
-                desc: ''
-            }
-        },
-        allId: ['1', '2', '3']
-    },
+    items: {},
 
     clickedCategory: '',
 
@@ -101,7 +47,8 @@ export const firebase_addCategory = (name) => {
 
         const category = {
             id: id,
-            name: name
+            name: name,
+            isDeleted: false
         }
 
         return firebase.ref('categories').child(id).set(category).then(function(snapshot) {
@@ -110,6 +57,22 @@ export const firebase_addCategory = (name) => {
             }
 
             dispatch(addCategory(data));
+        });
+    }
+}
+
+export const firebase_editCategory = (category) => {
+    return (dispatch) => {
+        return firebase.ref('categories').child(category.id).set(category).then(function(snapshot) {
+            dispatch(editCategory(category));
+        });
+    }
+}
+
+export const firebase_deleteCategory = (id) => {
+    return (dispatch) => {
+        return firebase.ref('categories/' + id).child('isDeleted').set(true).then(function(snapshot) {
+            dispatch(deleteCategory(id));
         });
     }
 }
@@ -128,11 +91,12 @@ export const firebase_loadItems = (categoryId) => {
 export const firebase_addItem = (item) => {
     return (dispatch) => {
         const id = v4();
+
         const _item = {
             id: id,
             ...item
         }
-        console.log(_item)
+
         return firebase.ref("items").child(id).set(_item).then(function(snapshot) {
             const data = {
                 [id] : _item
@@ -146,10 +110,9 @@ export const firebase_addItem = (item) => {
 //Local Function
 const LOAD_CATEGORIES = 'category/LOAD_CATEGORIES';
 const ADD_CATEGORY = 'category/ADD_CATEGORY';
+const EDIT_CATEGORY = 'category/EDIT_CATEGORY';
 const DELETE_CATEGORY = 'category/DELETE_CATEGORY';
 const CLICK_CATEGORY = 'category/CLICK_CATEGORY';
-
-const SET_CATE_ADDMODE = 'category/SET_CATE_ADDMODE';
 
 const LOAD_ITEMS = 'category/LOAD_ITEMS';
 const ADD_ITEM = 'category/ADD_ITEM';
@@ -160,10 +123,9 @@ const SET_UI_MODE = 'category/SET_UI_MODE'
 
 export const loadCategories = createAction(LOAD_CATEGORIES, categories => categories);
 export const addCategory = createAction(ADD_CATEGORY, name => name);
+export const editCategory = createAction(EDIT_CATEGORY, category => category);
 export const deleteCategory = createAction(DELETE_CATEGORY, id => id);
 export const clickCategory = createAction(CLICK_CATEGORY, id => id);
-
-export const setCateAddmode = createAction(SET_CATE_ADDMODE, visible => visible);
 
 export const loadItems = createAction(LOAD_ITEMS, items => items);
 export const addItem = createAction(ADD_ITEM, name => name);
@@ -186,30 +148,23 @@ export default handleActions({
         return state.set('categories', categories);
     },
 
+    [EDIT_CATEGORY]: (state, action) => {
+        const category = fromJS(action.payload);
+        const id = category.get('id');
+
+        return state.setIn(['categories', id], category);
+    },
+
     [DELETE_CATEGORY]: (state, action) => {
         const id = action.payload;
-        const category = {}
-        let categories = state.get('categories').merge(category);
-        
-        categories = categories.withMutatuibs((categories) => {
-            const byId = categories.get('byId');
-            const allId = categories.get('allId');
-
-            return categories.set('byId', byId.delete(id))
-                             .set('allId', allId.delete( allId.findIndex((_id) => (_id === id)) ));
-        });
+      
+        return state.setIn(['categories', id, 'isDeleted'], true);
     },
 
     [CLICK_CATEGORY]: (state, action) => {
         const category = action.payload;
 
         return state.set('clickedCategory', category);
-    },
-
-    [SET_CATE_ADDMODE]: (state, action) => {
-        const visible = action.payload;
-
-        return state.update('ui', (ui) => ui.update('category', (category) => category.set('isAddMode', visible)));
     },
 
     [LOAD_ITEMS] : (state, action) => {

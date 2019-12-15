@@ -52,7 +52,7 @@ class ItemsScreenContainer extends Component<Props> {
             address: '',
             menu: '',
             price: '',
-            score: '',
+            score: 0,
             desc: '',
             categoryId: this.props.clickedCategory.get('id')
         });

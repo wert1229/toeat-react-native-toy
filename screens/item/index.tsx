@@ -29,17 +29,13 @@ class ItemScreenContainer extends Component<Props> {
     };
 
     //Body Part 
-    _setTempItem = (name) => {
-        this.props.navigation.setParams({ name: name });
-    }
-
     _addItem = (item) => {
         CategoryActions.firebase_addItem(item);
         this.props.navigation.goBack();
     }
 
-    _saveItem = (name, categoryId) => {
-        CategoryActions.addItem({ name, categoryId });
+    _editItem = (item) => {
+        CategoryActions.addItem(item);
     }
 
     _toggleEdit = (id) => {
@@ -52,14 +48,15 @@ class ItemScreenContainer extends Component<Props> {
     
     render(){
         const { clickedItem, isAddMode, isEditMode } = this.props;
-        const { _setTempItem, _addItem, _saveItem, _toggleEdit, _clickPhoto } = this;
+        const { _addItem, _editItem  } = this;
 
         return (
             <ItemScreen 
                 item={clickedItem}
                 isAddMode={isAddMode}
                 isEditMode={isEditMode}
-                addItem={_addItem}/>
+                addItem={_addItem}
+                editItem={_editItem}/>
         )
     }
 }
