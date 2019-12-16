@@ -1,6 +1,5 @@
-import { combineReducers } from 'redux';
-import category from './home';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import reducers from './modules';
 
-export default combineReducers({
-    category
-});
+export default createStore(reducers, applyMiddleware(thunk));
