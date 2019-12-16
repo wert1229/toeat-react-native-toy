@@ -1,12 +1,44 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, SectionList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 
-const ItemsScreen = ({ items, clickedCategory, clickItem, clickAddBtn, deleteItem }) => {
-    
+const ItemsScreen = ({ items, currentCategory, clickItem, clickAddBtn, deleteItem }) => {
+
+    const _getSectionData = () => {
+        var _items = items.toJS();
+        var section = [
+            {
+                title: 'ToEat',
+                data: []
+            },
+            {
+                title: 'Done',
+                data: []
+            }
+        ];
+        
+        for(const key in _items) {
+            var _item = _items[key];
+            
+            if (_item.isDone) {
+                section[1].data.push(_item.id);
+            } else {
+                section[0].data.push(_item.id);
+            }
+        }
+
+        return section;
+    }
+
+    const _renderHeader = ({ section }) => {
+        return (
+            <Text>{section.title}</Text>
+        );
+    }
+
     const _renderItem = ({ item: id, index }) => {
         const curItem = items.get(id);
-        
+
         return (
             <TouchableOpacity
                 style={styles.itemContainer}
@@ -26,8 +58,10 @@ const ItemsScreen = ({ items, clickedCategory, clickItem, clickAddBtn, deleteIte
     return (
         <View style={styles.main}>
             <View style={styles.listContainer}>
-                <FlatList 
-                    data={Object.keys(items.toJS())}
+                <SectionList
+                    sections={_getSectionData()}
+                    renderSectionHeader={_renderHeader}
+                    // data={Object.keys(items.toJS())}
                     renderItem={_renderItem}
                     keyExtractor={_extractKey} />
             </View>

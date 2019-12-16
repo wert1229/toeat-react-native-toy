@@ -2,18 +2,19 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { fromJS } from 'immutable';
 
+import * as UI from '@/utils/ui';
 import { CategoryActions } from '@/stores/actionCreators';
 import ItemsScreen from './ItemsScreen';
 
 interface Props {
     items: {},
-    clickedCategory: any,
+    currentCategory: any,
     navigation: any
 }
 
 const mapStateToProps = (state) => ({
     items: state.category.get('items'),
-    clickedCategory: state.category.get('clickedCategory')
+    currentCategory: state.category.get('currentCategory')
 });
 
 class ItemsScreenContainer extends Component<Props> {
@@ -35,8 +36,10 @@ class ItemsScreenContainer extends Component<Props> {
     }
 
     _clickItem = (item) => {
-        CategoryActions.clickItem(item);
-        CategoryActions.setUiMode({ sector: 'item', mode: 'isAddMode', value: false });      
+        const mode = item.get('isDone') ? UI.NORMAL_MODE : UI.EDIT_MODE;
+
+        CategoryActions.setCurrentItem(item);
+        CategoryActions.setUiMode({ sector: 'item', mode: 'mode', value: mode });      
         this.props.navigation.navigate('Item', { title: item.get('name') });
     }
 
@@ -54,27 +57,27 @@ class ItemsScreenContainer extends Component<Props> {
             price: '',
             score: 0,
             desc: '',
-            categoryId: this.props.clickedCategory.get('id')
+            categoryId: this.props.currentCategory.get('id')
         });
 
-        CategoryActions.clickItem(item);
-        CategoryActions.setUiMode({ sector: 'item', mode: 'isAddMode', value: true });      
+        CategoryActions.setCurrentItem(item);
+        CategoryActions.setUiMode({ sector: 'item', mode: 'mode', value: UI.ADD_MODE});      
         this.props.navigation.navigate('Item', { title: '추가' });
     }
 
     componentDidMount() {
-        const categoryId = this.props.clickedCategory.get('id');
+        const categoryId = this.props.currentCategory.get('id');
         CategoryActions.firebase_loadItems(categoryId);
     }
 
     render(){
-        const { items, clickedCategory } = this.props;
+        const { items, currentCategory } = this.props;
         const { _deleteItem, _clickItem, _clickAddBtn } = this;
 
         return (
             <ItemsScreen 
                 items={items}
-                clickedCategory={clickedCategory}
+                currentCategory={currentCategory}
                 clickAddBtn={_clickAddBtn}
                 deleteItem={_deleteItem}
                 clickItem={_clickItem}/>

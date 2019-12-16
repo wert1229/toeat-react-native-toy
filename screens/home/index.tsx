@@ -6,13 +6,11 @@ import HomeScreen from './HomeScreen';
 
 interface Props {
     categories: {},
-    isAddMode: boolean,
     navigation: any
 }
 
 const mapStateToProps = (state) => ({
-    categories: state.category.get('categories'),
-    isAddMode: state.category.get('ui').get('category').get('isAddMode')
+    categories: state.category.get('categories')
 });
 
 class HomeScreenContainer extends Component<Props> {
@@ -39,13 +37,13 @@ class HomeScreenContainer extends Component<Props> {
     }
 
     _clickCategory = (category) => {
-        CategoryActions.clickCategory(category);
+        CategoryActions.setCurrentCategory(category);
         this.props.navigation.navigate('Items', { title: category.get('name')});
     }
 
     componentDidMount() {
         this.props.navigation.addListener('willFocus', () => {
-            CategoryActions.clickItem({});
+            CategoryActions.setCurrentItem({});
             CategoryActions.firebase_loadCategories();
         });
     }

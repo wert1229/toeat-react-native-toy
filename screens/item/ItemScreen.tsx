@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Ionicons } from '@expo/vector-icons'; 
 
+import * as UI from '@/utils/ui';
 import DimModal from '@/components/DimModal';
 
-const ItemScreen = ({ item, isAddMode, isEditMode, addItem, editItem }) => {
+const ItemScreen = ({ item, UIMode, setUIMode, addItem, editItem }) => {
     
     const [curItem, setCurItem] = useState(item.toJS());
     const [modalVisible, setModalVisible] = useState(false);
+
+    // useEffect(() => {
+    //     const mode = (!curItem.isDone && !isAddMode) || isEditMode
+
+    //     setEditMode(mode);
+    // });
 
     const _setItem = (value) => {
         setCurItem({
@@ -33,9 +40,12 @@ const ItemScreen = ({ item, isAddMode, isEditMode, addItem, editItem }) => {
             stars.push(
                 <TouchableOpacity
                     key={i}
-                    onPress={() => _setItem({score: score == i ? i - 1 : i})}>
-
-                    <Ionicons 
+                    onPress={ 
+                        UIMode == UI.EDIT_MODE
+                        ? () => _setItem({score: score == i ? i - 1 : i})
+                        : () => {}}>
+                
+                    <Ionicons
                         name={starKind}
                         size={24} />
                 </TouchableOpacity>)
@@ -54,12 +64,6 @@ const ItemScreen = ({ item, isAddMode, isEditMode, addItem, editItem }) => {
     return (
         <View style={styles.main}>
             <View style={styles.mapContainer}>
-                <TouchableOpacity 
-                    style={styles.addButton}
-                    onPress={() => setModalVisible(true)}>
-
-                    <Text style={styles.addButtonText}>{'search'}</Text>
-                </TouchableOpacity>
                 <MapView
                     style={{ flex: 5 }}
                     provider={PROVIDER_GOOGLE}
@@ -104,8 +108,9 @@ const ItemScreen = ({ item, isAddMode, isEditMode, addItem, editItem }) => {
                 <View style={styles.editItem}>
                     <Text>{'상호명'}</Text>
                     <TouchableOpacity>
-                        {isAddMode
+                        {!(UIMode == UI.NORMAL_MODE)
                         ?<TextInput
+                            style={styles.editTextInput}
                             value={curItem.name}
                             placeholder={'상호명'}
                             onChangeText={ text => _setItem({ name: text }) }/>
@@ -114,20 +119,29 @@ const ItemScreen = ({ item, isAddMode, isEditMode, addItem, editItem }) => {
                 </View>
                 <View style={styles.editItem}>
                     <Text>{'주소'}</Text>
-                    <TouchableOpacity
-                        onPress={() => setModalVisible(true)}>
+                    <View style={{ flexDirection: 'row' }}>
                         {curItem.address == ''
-                        ?<Text>{'검색'}</Text>
+                        ?<Text>{'검색 이용 ->'}</Text>
                         :<Text>{curItem.address}</Text>}
-                    </TouchableOpacity>
+
+                        {!(UIMode == UI.NORMAL_MODE) && 
+                        <TouchableOpacity
+                            onPress={() => setModalVisible(true)}>
+
+                            <Ionicons 
+                                name="md-search" 
+                                size={24} />
+                        </TouchableOpacity>}
+                    </View>
                 </View>
                 <View style={styles.editItem}>
                     <Text>{'메뉴'}</Text>
                     <TouchableOpacity>
-                        {isAddMode
+                        {!(UIMode == UI.NORMAL_MODE)
                         ?<TextInput 
+                            style={styles.editTextInput}
                             value={curItem.menu}
-                            placeholder={'메뉴'}
+                            placeholder={'메뉴를 입력'}
                             onChangeText={ text => _setItem({ menu: text }) }/>
                         :<Text>{curItem.menu}</Text>}
                     </TouchableOpacity>
@@ -135,30 +149,37 @@ const ItemScreen = ({ item, isAddMode, isEditMode, addItem, editItem }) => {
                 <View style={styles.editItem}>
                     <Text>{'가격(인당)'}</Text>
                     <TouchableOpacity>
-                        {isAddMode
-                        ?<TextInput 
+                        {!(UIMode == UI.NORMAL_MODE)
+                        ?<TextInput
+                            style={styles.editTextInput}
                             value={curItem.price}
-                            placeholder={'인당 가격'}
+                            placeholder={'인당 가격 입력'}
                             onChangeText={ text => _setItem({ price: text }) }/>
                         :<Text>{curItem.price}</Text>}
                     </TouchableOpacity>
                 </View>
-                {!isAddMode &&
+                {!(UIMode == UI.ADD_MODE) &&
                 <View style={styles.editItem}>
                     <Text>{'평점'}</Text>
                     <View style={{flexDirection: 'row'}}>
                         {_makeStars()} 
                     </View>
                 </View>}
-                {!isAddMode &&
+                {!(UIMode == UI.ADD_MODE) &&
                 <View style={styles.editItem}>
                     <Text>{'비고'}</Text>
                     <TouchableOpacity>
-                        <Text>{curItem.desc}</Text>
+                        {!(UIMode == UI.NORMAL_MODE)
+                        ?<TextInput 
+                            style={styles.editTextInput}
+                            value={curItem.desc}
+                            placeholder={'비고 입력'}
+                            onChangeText={ text => _setItem({ desc: text }) }/>
+                        :<Text>{curItem.desc}</Text>}
                     </TouchableOpacity>
                 </View>}
             </View>
-            {isAddMode &&
+            {UIMode == UI.ADD_MODE &&
             <View style={styles.addContainer}>
                 <TouchableOpacity 
                     style={styles.addButton}
@@ -167,15 +188,25 @@ const ItemScreen = ({ item, isAddMode, isEditMode, addItem, editItem }) => {
                     <Text style={styles.addButtonText}>{'Add'}</Text>
                 </TouchableOpacity>
             </View>}
-            {isEditMode &&
+            {UIMode == UI.EDIT_MODE &&
             <View style={styles.addContainer}>
                 <TouchableOpacity 
                     style={styles.addButton}
-                    onPress={() => editItem(curItem)}>
+                    onPress={() => {setUIMode(UI.NORMAL_MODE); return editItem(curItem)}}>
+
+                    <Text style={styles.addButtonText}>{'Commit'}</Text>
+                </TouchableOpacity>
+            </View>}
+            {UIMode == UI.NORMAL_MODE &&
+            <View style={styles.addContainer}>
+                <TouchableOpacity 
+                    style={styles.addButton}
+                    onPress={() => setUIMode(UI.EDIT_MODE)}>
 
                     <Text style={styles.addButtonText}>{'Edit'}</Text>
                 </TouchableOpacity>
             </View>}
+
 
             <View>
                 <DimModal
@@ -233,6 +264,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: "space-between"
+    },
+    editTextInput: {
+        textAlign: 'right',
+        minWidth: '40%',
+        borderColor: 'gray',
+        borderWidth: 1
     },
     buttonText: {
         fontSize: 20,

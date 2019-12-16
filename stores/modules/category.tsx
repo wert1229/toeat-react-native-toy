@@ -9,23 +9,19 @@ const initialState = fromJS({
 
     items: {},
 
-    clickedCategory: '',
-
-    clickedItem: '',
-
-    tempItem: {},
+    currentCategory: {},
+    
+    currentItem: {},
     
     ui: {
         category: {
-            isAddMode: false,
-            isEditMode: false
+            mode: 0
         },
         items: {
 
         },
         item: {
-            isAddMode: false,
-            isEditMode: false 
+            mode: 0
         }
     }
 });
@@ -107,17 +103,26 @@ export const firebase_addItem = (item) => {
     }
 }
 
+export const firebase_editItem = (item) => {
+    return (dispatch) => {
+        return firebase.ref('items').child(item.id).set(item).then(function(snapshot) {
+            dispatch(editItem(item));
+        });
+    }
+}
+
 //Local Function
 const LOAD_CATEGORIES = 'category/LOAD_CATEGORIES';
 const ADD_CATEGORY = 'category/ADD_CATEGORY';
 const EDIT_CATEGORY = 'category/EDIT_CATEGORY';
 const DELETE_CATEGORY = 'category/DELETE_CATEGORY';
-const CLICK_CATEGORY = 'category/CLICK_CATEGORY';
+const SET_CURR_CATEGORY = 'category/SET_CURR_CATEGORY';
 
 const LOAD_ITEMS = 'category/LOAD_ITEMS';
 const ADD_ITEM = 'category/ADD_ITEM';
+const EDIT_ITEM = 'category/EDIT_ITEM';
 const DELETE_ITEM = 'category/DELETE_ITEM';
-const CLICK_ITEM = 'category/CLICK_ITEM';
+const SET_CURR_ITEM = 'category/SET_CURR_ITEM';
 
 const SET_UI_MODE = 'category/SET_UI_MODE'
 
@@ -125,12 +130,13 @@ export const loadCategories = createAction(LOAD_CATEGORIES, categories => catego
 export const addCategory = createAction(ADD_CATEGORY, name => name);
 export const editCategory = createAction(EDIT_CATEGORY, category => category);
 export const deleteCategory = createAction(DELETE_CATEGORY, id => id);
-export const clickCategory = createAction(CLICK_CATEGORY, id => id);
+export const setCurrentCategory = createAction(SET_CURR_CATEGORY, id => id);
 
 export const loadItems = createAction(LOAD_ITEMS, items => items);
 export const addItem = createAction(ADD_ITEM, name => name);
+export const editItem = createAction(EDIT_ITEM, item => item);
 export const deleteItem = createAction(DELETE_ITEM, id => id);
-export const clickItem = createAction(CLICK_ITEM, id => id);
+export const setCurrentItem = createAction(SET_CURR_ITEM, id => id);
 
 export const setUiMode = createAction(SET_UI_MODE);
 
@@ -161,10 +167,10 @@ export default handleActions({
         return state.setIn(['categories', id, 'isDeleted'], true);
     },
 
-    [CLICK_CATEGORY]: (state, action) => {
+    [SET_CURR_CATEGORY]: (state, action) => {
         const category = action.payload;
 
-        return state.set('clickedCategory', category);
+        return state.set('currentCategory', category);
     },
 
     [LOAD_ITEMS] : (state, action) => {
@@ -178,6 +184,13 @@ export default handleActions({
         const items = state.get('items').merge(item);
 
         return state.set('items', items);
+    },
+
+    [EDIT_ITEM]: (state, action) => {
+        const item = fromJS(action.payload);
+        const id = item.get('id');
+
+        return state.setIn(['items', id], item).set('currentItem', item);
     },
 
     [DELETE_ITEM]: (state, action) => {
@@ -194,10 +207,10 @@ export default handleActions({
         });
     },
 
-    [CLICK_ITEM]: (state, action) => {
-        const id = action.payload;
+    [SET_CURR_ITEM]: (state, action) => {
+        const item = action.payload;
 
-        return state.set('clickedItem', id);
+        return state.set('currentItem', item);
     },
 
     [SET_UI_MODE]: (state, action) => {

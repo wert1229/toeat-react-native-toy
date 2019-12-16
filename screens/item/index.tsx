@@ -5,18 +5,16 @@ import { CategoryActions } from '@/stores/actionCreators';
 import ItemScreen from './ItemScreen';
 
 interface Props {
-    clickedItem: {},
+    currentItem: {},
     categoryId: string,
-    isAddMode: boolean,
-    isEditMode: boolean,
+    UIMode: number,
     navigation: any
 }
 
 const mapStateToProps = (state) => ({
-    clickedItem: state.category.get('clickedItem'),
-    categoryId: state.category.get('clickedCategory'),
-    isAddMode: state.category.get('ui').get('item').get('isAddMode'),
-    isEditMode: state.category.get('ui').get('item').get('isEditMode')
+    currentItem: state.category.get('currentItem'),
+    categoryId: state.category.get('currentCategory'),
+    UIMode: state.category.get('ui').get('item').get('mode')
 });
 
 class ItemScreenContainer extends Component<Props> {
@@ -35,26 +33,27 @@ class ItemScreenContainer extends Component<Props> {
     }
 
     _editItem = (item) => {
-        CategoryActions.addItem(item);
+        item = {
+            ...item,
+            isDone: true
+        }
+        
+        CategoryActions.firebase_editItem(item);
     }
 
-    _toggleEdit = (id) => {
-        CategoryActions.deleteCategory(id);
-    }
-
-    _clickPhoto = (id) => {
-        CategoryActions.clickCategory(id);
+    _setUIMode = (value) => {
+        CategoryActions.setUiMode({ sector: 'item', mode: 'mode', value: value});
     }
     
     render(){
-        const { clickedItem, isAddMode, isEditMode } = this.props;
-        const { _addItem, _editItem  } = this;
+        const { currentItem, UIMode } = this.props;
+        const { _addItem, _editItem, _setUIMode } = this;
 
         return (
             <ItemScreen 
-                item={clickedItem}
-                isAddMode={isAddMode}
-                isEditMode={isEditMode}
+                item={currentItem}
+                UIMode={UIMode}
+                setUIMode={_setUIMode}
                 addItem={_addItem}
                 editItem={_editItem}/>
         )

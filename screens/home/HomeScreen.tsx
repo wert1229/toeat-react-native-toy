@@ -10,15 +10,15 @@ const CATEGORY_WIDTH = width * 0.45
 
 const HomeScreen = ({ categories, clickCategory, addCategory, editCategory, deleteCategory }) => {
     
-    const [isAddMode, setAddMode] = useState(false);
-    const [isEditMode, setEditMode] = useState(false);
+    const [addVisible, setAddVisible] = useState(false);
+    const [editVisible, setEditVisible] = useState(false);
 
     const [newCategoryName, setNewCategoryName] = useState('');
     const [editingCategory, setEditingCategory] = useState(fromJS({}));
     
     const _editCategory = (item) => {
         setEditingCategory(item);
-        setEditMode(true)
+        setEditVisible(true)
     }
 
     const _confirmDelete = () => {
@@ -34,7 +34,7 @@ const HomeScreen = ({ categories, clickCategory, addCategory, editCategory, dele
                 {
                     text: 'Delete', 
                     onPress: () => {
-                        setEditMode(false);
+                        setEditVisible(false);
                         deleteCategory(editingCategory.get('id'));
                     }
                 },
@@ -72,7 +72,7 @@ const HomeScreen = ({ categories, clickCategory, addCategory, editCategory, dele
             <View style={styles.buttonContainer}>
                 <TouchableOpacity 
                     style={styles.addButton}
-                    onPress={() => setAddMode(true)}>
+                    onPress={() => setAddVisible(true)}>
 
                     <Text style={styles.addButtonText}>{'Add'}</Text>
                 </TouchableOpacity>
@@ -80,8 +80,8 @@ const HomeScreen = ({ categories, clickCategory, addCategory, editCategory, dele
 
             <View>
                 <DimModal
-                    visible={isAddMode}
-                    setVisibleFunc={setAddMode}>
+                    visible={addVisible}
+                    setVisibleFunc={setAddVisible}>
                         
                     <View style={styles.addPopup}>
                         <Text>{'추가'}</Text>
@@ -91,7 +91,7 @@ const HomeScreen = ({ categories, clickCategory, addCategory, editCategory, dele
                         <TouchableOpacity
                             onPress={newCategoryName === '' ? 
                                 () => {Alert.alert('alert', '빈칸불가')} :
-                                () => {setAddMode(false); return addCategory(newCategoryName)} }>
+                                () => {setAddVisible(false); return addCategory(newCategoryName)} }>
 
                             <Text>Ok</Text>
                         </TouchableOpacity>
@@ -99,8 +99,8 @@ const HomeScreen = ({ categories, clickCategory, addCategory, editCategory, dele
                 </DimModal>
 
                 <DimModal
-                    visible={isEditMode}
-                    setVisibleFunc={setEditMode}>
+                    visible={editVisible}
+                    setVisibleFunc={setEditVisible}>
                     
                     <TouchableOpacity
                         style={styles.editCategoryBtn}
@@ -127,7 +127,7 @@ const HomeScreen = ({ categories, clickCategory, addCategory, editCategory, dele
                             <TouchableOpacity
                                 onPress={editingCategory.get('name') === '' ? 
                                     () => {Alert.alert('alert', '빈칸불가')} :
-                                    () => {setEditMode(false); return editCategory(editingCategory)} }>
+                                    () => {setEditVisible(false); return editCategory(editingCategory)} }>
 
                                 <Ionicons 
                                     name="md-checkmark" 
