@@ -11,4 +11,4 @@
   - Validation
   - SectorList
   - ActionButtons to Header
-  
+  - Images and Camera Works
