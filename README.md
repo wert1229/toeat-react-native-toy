@@ -9,6 +9,6 @@
 ### MINOR TODOS:
   - Sorting
   - Validation
-  - SectorList
+  - ~~SectorList~~
   - ActionButtons to Header
   - Images and Camera Works
